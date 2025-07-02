@@ -15,6 +15,10 @@ app.use(cookieParser());
 app.get('/', (req, res) => {
     res.send('Hello guys welcometo leetcode');
 });
+app.use(cors({
+    origin:"http://localhost:5174",
+    credentials:true
+}))
 
 app.use("/api/v1/auth",authRoutes)
 app.use("/api/v1/problems",problemRoutes)

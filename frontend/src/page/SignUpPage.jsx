@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
+import React , {useState} from 'react'
+import {useForm} from "react-hook-form"
+import {zodResolver} from "@hookform/resolvers/zod"
+import { Link } from 'react-router-dom'
 import {
   Code,
   Eye,
@@ -9,136 +9,162 @@ import {
   Loader2,
   Lock,
   Mail,
-  User,
-} from 'lucide-react';
-import { z } from 'zod';
+} from "lucide-react";
+
+import {z} from "zod";
+import AuthImagePattern from '../components/AuthImagePattern';
+import { useAuthStore } from "../store/useAuthStore";
 
 const SignUpSchema = z.object({
-  email: z.string().email('Enter a valid email'),
-  password: z.string().min(6, 'Password must be of 6 characters'),
-  username: z.string().min(3, 'Name must be at least 3 characters'),
-});
+  email:z.string().email("Enter a valid email"),
+  password:z.string().min(6 , "Password must be atleast of 6 characters"),
+  name:z.string().min(3 , "Name must be atleast 3 character")
+})
 
 const SignUpPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSigningUp, setIsSigningUp] = useState(false);
+
+  const [showPassword , setShowPassword] = useState(false);
+
+  const {signup , isSigninUp} = useAuthStore()
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState:{errors},
   } = useForm({
-    resolver: zodResolver(SignUpSchema),
-  });
+    resolver:zodResolver(SignUpSchema)
+  })
 
-  const signup = async (data) => {
-    return new Promise((resolve) => setTimeout(resolve, 1000));
-  };
+  const onSubmit = async (data)=>{
+   try {
+    await signup(data)
+    console.log("signup data" , data)
+   } catch (error) {
+     console.error("SignUp failed:", error);
+   }
+  }
 
-  const onSubmit = async (data) => {
-    try {
-      setIsSigningUp(true);
-      await signup(data);
-      console.log('Signup data:', data);
-    } catch (error) {
-      console.error('SignUp failed:', error);
-    } finally {
-      setIsSigningUp(false);
-    }
-  };
 
   return (
-    <div className='h-screen grid lg:grid-cols-2 bg-gray-900 text-white'>
-      <div className='flex flex-col justify-center items-center p-6 sm:p-12'>
-        <div className='w-full max-w-md space-y-8'>
-          <div className='text-center mb-8'>
-            <div className='flex flex-col items-center gap-2 group'>
-              <div className='w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors'>
-                <Code className='w-6 h-6 text-primary' />
+    <div className='h-screen grid lg:grid-cols-2'>
+        <div className="flex flex-col justify-center items-center p-6 sm:p-12">
+        <div className="w-full max-w-md space-y-8">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <div className="flex flex-col items-center gap-2 group">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <Code className="w-6 h-6 text-primary" />
               </div>
-              <h1 className='text-2xl font-bold mt-2'>Welcome</h1>
-              <p className='text-base-content/60'>Sign up to your account</p>
+              <h1 className="text-2xl font-bold mt-2">Welcome </h1>
+              <p className="text-base-content/60">Sign Up to your account</p>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-            <div className='form-control'>
-              <label className='label'>
-                <span className='label-text font-medium text-white'>Username</span>
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            
+            {/* name */}
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium">Name</span>
               </label>
-              <div className='relative'>
-                <User className='absolute left-3 top-3 h-5 w-5 text-gray-400' />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Code className="h-5 w-5 text-base-content/40" />
+                </div>
                 <input
-                  type='text'
-                  {...register('username')}
-                  className={`input input-bordered w-full pl-10 bg-gray-800 text-white ${errors.username ? 'input-error' : ''}`}
-                  placeholder='John Doe'
+                  type="text"
+                  {...register("name")}
+                  className={`input input-bordered w-full pl-10 ${
+                    errors.name ? "input-error" : ""
+                  }`}
+                  placeholder="John Doe"
                 />
               </div>
-              {errors.username && (
-                <p className='text-red-400 text-sm mt-1'>{errors.username.message}</p>
-              )}
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+              )}              
             </div>
 
-            <div className='form-control'>
-              <label className='label'>
-                <span className='label-text font-medium text-white'>Email</span>
+            {/* Email */}
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium">Email</span>
               </label>
-              <div className='relative'>
-                <Mail className='absolute left-3 top-3 h-5 w-5 text-gray-400' />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-base-content/40" />
+                </div>
                 <input
-                  type='email'
-                  {...register('email')}
-                  className={`input input-bordered w-full pl-10 bg-gray-800 text-white ${errors.email ? 'input-error' : ''}`}
-                  placeholder='you@example.com'
+                  type="email"
+                  {...register("email")}
+                  className={`input input-bordered w-full pl-10 ${
+                    errors.email ? "input-error" : ""
+                  }`}
+                  placeholder="you@example.com"
                 />
               </div>
               {errors.email && (
-                <p className='text-red-400 text-sm mt-1'>{errors.email.message}</p>
+                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
               )}
             </div>
 
-            <div className='form-control'>
-              <label className='label'>
-                <span className='label-text font-medium text-white'>Password</span>
+            {/* Password */}
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-medium">Password</span>
               </label>
-              <div className='relative'>
-                <Lock className='absolute left-3 top-3 h-5 w-5 text-gray-400' />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-base-content/40" />
+                </div>
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  {...register('password')}
-                  className={`input input-bordered w-full pl-10 pr-10 bg-gray-800 text-white ${errors.password ? 'input-error' : ''}`}
-                  placeholder='••••••••'
+                  type={showPassword ? "text" : "password"}
+                  {...register("password")}
+                  className={`input input-bordered w-full pl-10 ${
+                    errors.password ? "input-error" : ""
+                  }`}
+                  placeholder="••••••••"
                 />
                 <button
-                  type='button'
-                  className='absolute right-3 top-2.5'
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className='h-5 w-5 text-gray-400' /> : <Eye className='h-5 w-5 text-gray-400' />}
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-base-content/40" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-base-content/40" />
+                  )}
                 </button>
               </div>
               {errors.password && (
-                <p className='text-red-400 text-sm mt-1'>{errors.password.message}</p>
+                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
               )}
             </div>
 
-            <button type='submit' className='btn btn-primary w-full' disabled={isSigningUp}>
-              {isSigningUp ? (
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+             disabled={isSigninUp}
+            >
+               {isSigninUp ? (
                 <>
-                  <Loader2 className='h-5 w-5 animate-spin mr-2' />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                   Loading...
                 </>
               ) : (
-                'Sign Up'
+                "Sign in"
               )}
             </button>
           </form>
 
-          <div className='text-center'>
-            <p className='text-gray-400'>
-              Already have an account?{' '}
-              <Link to='/login' className='link link-primary'>
+          {/* Footer */}
+          <div className="text-center">
+            <p className="text-base-content/60">
+              Already have an account?{" "}
+              <Link to="/login" className="link link-primary">
                 Sign in
               </Link>
             </p>
@@ -146,16 +172,15 @@ const SignUpPage = () => {
         </div>
       </div>
 
-      <div className='hidden lg:flex items-center justify-center bg-gray-800'>
-        <div className='text-center px-8'>
-          <h2 className='text-3xl font-bold mb-2'>Welcome to our platform!</h2>
-          <p className='text-base text-gray-300'>
-            Sign up to access our platform and start using our services.
-          </p>
-        </div>
-      </div>
+       {/* Right Side - Image/Pattern */}
+      <AuthImagePattern
+        title={"Welcome to our platform!"}
+        subtitle={
+          "Sign up to access our platform and start using our services."
+        }
+      />
     </div>
-  );
-};
+  )
+}
 
-export default SignUpPage;
+export default SignUpPage
