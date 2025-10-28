@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "build": "npm install && npx prisma generate",
+    "render-build": "npm install && npx prisma generate && npx prisma db push",
+    "db:setup": "npx prisma generate && npx prisma db push",
+    "db:migrate": "npx prisma migrate deploy"
   },
   "keywords": [],
   "author": "",
