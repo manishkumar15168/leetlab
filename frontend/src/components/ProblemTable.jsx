@@ -26,7 +26,7 @@ const ProblemsTable = ({ problems }) => {
     const tagsSet = new Set();
     problems.forEach((p) => p.tags?.forEach((t) => tagsSet.add(t)));
     return Array.from(tagsSet);
-  }, [problems]);
+  }, [problems]); 
 
   // Define allowed difficulties
   const difficulties = ["EASY", "MEDIUM", "HARD"];
